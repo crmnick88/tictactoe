@@ -446,6 +446,11 @@
 
             // Update board display
             updateBoard(board) {
+                if (!board || !Array.isArray(board)) {
+                    console.error('Invalid board:', board);
+                    return;
+                }
+                
                 const cells = document.querySelectorAll('.cell');
                 cells.forEach((cell, index) => {
                     const value = board[index];
