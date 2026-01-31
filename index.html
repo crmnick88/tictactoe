@@ -506,6 +506,16 @@
                     const snapshot = await this.gameRef.once('value');
                     const gameData = snapshot.val();
                     
+                    if (!gameData) {
+                        console.error('No game data');
+                        return;
+                    }
+
+                    if (!gameData.board || !Array.isArray(gameData.board)) {
+                        console.error('Invalid board in game data:', gameData);
+                        return;
+                    }
+                    
                     if (gameData.board[index] !== null) {
                         console.log('Cell already taken');
                         return;
@@ -534,10 +544,11 @@
                     }
                     
                     await this.gameRef.update(updates);
-                    console.log('Move completed');
+                    console.log('Move completed successfully');
                     
                 } catch (error) {
                     console.error('Error making move:', error);
+                    alert('Error making move. Check your internet connection.');
                 }
             },
 
