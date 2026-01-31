@@ -253,6 +253,7 @@
                 <button class="cell" onclick="game.makeMove(7)"></button>
                 <button class="cell" onclick="game.makeMove(8)"></button>
             </div>
+            <button class="btn btn-primary" id="playAgainBtn" style="display: none;" onclick="game.playAgain()">נ”„ Play Again</button>
             <button class="btn btn-secondary" onclick="game.leaveGame()">Leave Game</button>
         </div>
     </div>
@@ -467,8 +468,12 @@
             // Update game status
             updateStatus(gameData) {
                 const statusEl = document.getElementById('gameStatus');
+                const playAgainBtn = document.getElementById('playAgainBtn');
                 
                 if (gameData.status === 'finished') {
+                    // Show Play Again button
+                    playAgainBtn.style.display = 'block';
+                    
                     if (gameData.winner === 'draw') {
                         statusEl.textContent = "It's a Draw!";
                         statusEl.className = 'status';
@@ -481,6 +486,9 @@
                     }
                     this.isMyTurn = false;
                 } else {
+                    // Hide Play Again button during active game
+                    playAgainBtn.style.display = 'none';
+                    
                     this.isMyTurn = (gameData.currentPlayer === this.playerSymbol);
                     
                     if (this.isMyTurn) {
@@ -578,6 +586,23 @@
                     }
                 }
                 this.showHomeScreen();
+            },
+
+            // Play again (reset board)
+            async playAgain() {
+                if (!this.gameRef) return;
+                
+                try {
+                    await this.gameRef.update({
+                        board: ['', '', '', '', '', '', '', '', ''],
+                        currentPlayer: 'X',
+                        status: 'active',
+                        winner: null
+                    });
+                    console.log('Game reset for new round');
+                } catch (error) {
+                    console.error('Error resetting game:', error);
+                }
             }
         };
 
