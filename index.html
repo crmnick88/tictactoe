@@ -354,17 +354,17 @@
     <div id="modeScreen" class="screen active">
         <h1 class="title">TIC TAC TOE</h1>
         <button class="btn" onclick="app.showScreen('aiGame')">
-            <span>🤖</span> Play vs Computer
+            <span>נ₪–</span> Play vs Computer
         </button>
         <button class="btn" onclick="app.showScreen('multiplayerLobby')">
-            <span>👥</span> Play with Friend
+            <span>נ‘¥</span> Play with Friend
         </button>
     </div>
 
     <!-- Multiplayer Lobby -->
     <div id="multiplayerLobby" class="screen">
         <div class="header">
-            <button class="back-btn" onclick="app.showScreen('modeScreen')">←</button>
+            <button class="back-btn" onclick="app.showScreen('modeScreen')">ג†</button>
             <h2>MULTIPLAYER</h2>
             <div style="width: 40px;"></div>
         </div>
@@ -375,18 +375,18 @@
     <!-- Create Game / Waiting Room -->
     <div id="waitingRoom" class="screen">
         <div class="header">
-            <button class="back-btn" onclick="app.cancelGame()">✕</button>
+            <button class="back-btn" onclick="app.cancelGame()">ג•</button>
             <h2>WAITING ROOM</h2>
             <div style="width: 40px;"></div>
         </div>
         <div class="status-text">Waiting for opponent...</div>
-        <div class="spinner">⟳</div>
+        <div class="spinner">ג³</div>
         <div class="room-code-display">
             <div style="font-size: 14px; color: #a0a0a0; margin-bottom: 10px;">Room Code</div>
             <div class="room-code" id="roomCodeDisplay">------</div>
         </div>
-        <button class="btn btn-small" onclick="app.copyCode()">📋 Copy Code</button>
-        <button class="btn btn-small" onclick="app.shareCode()">🔗 Share</button>
+        <button class="btn btn-small" onclick="app.copyCode()">נ“‹ Copy Code</button>
+        <button class="btn btn-small" onclick="app.shareCode()">נ”— Share</button>
         <div class="status-text" style="font-size: 16px; margin-top: 20px;">
             Share this code with your friend!
         </div>
@@ -395,7 +395,7 @@
     <!-- Join Game -->
     <div id="joinGame" class="screen">
         <div class="header">
-            <button class="back-btn" onclick="app.showScreen('multiplayerLobby')">←</button>
+            <button class="back-btn" onclick="app.showScreen('multiplayerLobby')">ג†</button>
             <h2>JOIN GAME</h2>
             <div style="width: 40px;"></div>
         </div>
@@ -415,7 +415,7 @@
     <!-- AI Game -->
     <div id="aiGame" class="screen">
         <div class="header">
-            <button class="back-btn" onclick="app.showScreen('modeScreen')">←</button>
+            <button class="back-btn" onclick="app.showScreen('modeScreen')">ג†</button>
             <h2>VS COMPUTER</h2>
             <div style="width: 40px;"></div>
         </div>
@@ -454,7 +454,7 @@
     <!-- Multiplayer Game -->
     <div id="multiplayerGame" class="screen">
         <div class="header">
-            <button class="back-btn" onclick="app.leaveMultiplayerGame()">←</button>
+            <button class="back-btn" onclick="app.leaveMultiplayerGame()">ג†</button>
             <h2>MULTIPLAYER</h2>
             <div style="width: 40px;"></div>
         </div>
@@ -671,9 +671,15 @@
                 // Listen to game state
                 this.gameRef.on('value', (snapshot) => {
                     const gameData = snapshot.val();
-                    if (!gameData) return;
+                    if (!gameData) {
+                        console.error('No game data received');
+                        return;
+                    }
 
-                    this.updateMultiplayerBoard(gameData.board);
+                    if (gameData.board && Array.isArray(gameData.board)) {
+                        this.updateMultiplayerBoard(gameData.board);
+                    }
+                    
                     this.isMyTurn = (gameData.currentTurn === this.playerSymbol);
                     this.updateTurnIndicator();
                     
@@ -684,6 +690,11 @@
             },
 
             updateMultiplayerBoard(board) {
+                if (!board || !Array.isArray(board)) {
+                    console.error('Invalid board data:', board);
+                    return;
+                }
+                
                 const cells = document.querySelectorAll('#boardMulti .cell');
                 cells.forEach((cell, index) => {
                     const value = board[index];
@@ -703,10 +714,10 @@
             updateTurnIndicator() {
                 const indicator = document.getElementById('statusMulti');
                 if (this.isMyTurn) {
-                    indicator.textContent = '🟢 Your Turn!';
+                    indicator.textContent = 'נ¢ Your Turn!';
                     indicator.className = 'turn-indicator your-turn';
                 } else {
-                    indicator.textContent = '⏳ Opponent\'s turn...';
+                    indicator.textContent = 'ג³ Opponent\'s turn...';
                     indicator.className = 'turn-indicator opponent-turn';
                 }
             },
@@ -750,7 +761,7 @@
                     indicator.textContent = 'Draw!';
                     indicator.className = 'turn-indicator';
                 } else if (gameData.winner === this.playerSymbol) {
-                    indicator.textContent = '🎉 You Win! 🎉';
+                    indicator.textContent = 'נ‰ You Win! נ‰';
                     indicator.className = 'turn-indicator win';
                     this.highlightWinningCells('#boardMulti', gameData.winningCombo);
                 } else {
@@ -883,7 +894,7 @@
                     if (result.winner === 'X') {
                         this.aiGameState.scores.wins++;
                         document.getElementById('winsAI').textContent = this.aiGameState.scores.wins;
-                        status.textContent = '🎉 You Win! 🎉';
+                        status.textContent = 'נ‰ You Win! נ‰';
                         status.className = 'turn-indicator win';
                     } else {
                         this.aiGameState.scores.losses++;
