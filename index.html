@@ -664,6 +664,13 @@
             },
 
             startMultiplayerGame() {
+                console.log('Starting multiplayer game, player:', this.playerSymbol);
+                
+                // Update game status to active
+                if (this.playerSymbol === 'O') {
+                    this.gameRef.update({ status: 'active' });
+                }
+                
                 this.showScreen('multiplayerGame');
                 document.getElementById('yourSymbol').textContent = this.playerSymbol;
                 document.getElementById('opponentSymbol').textContent = this.playerSymbol === 'X' ? 'O' : 'X';
@@ -675,6 +682,8 @@
                         console.error('No game data received');
                         return;
                     }
+
+                    console.log('Game data received:', gameData);
 
                     if (gameData.board && Array.isArray(gameData.board)) {
                         this.updateMultiplayerBoard(gameData.board);
@@ -723,34 +732,62 @@
             },
 
             async makeMultiplayerMove(index) {
-                if (!this.isMyTurn) return;
-
-                const snapshot = await this.gameRef.once('value');
-                const gameData = snapshot.val();
+                console.log('makeMultiplayerMove called', index, 'isMyTurn:', this.isMyTurn);
                 
-                if (gameData.board[index] !== null) return;
-
-                const newBoard = [...gameData.board];
-                newBoard[index] = this.playerSymbol;
-
-                const winner = this.checkWinner(newBoard);
-                const isDraw = newBoard.every(cell => cell !== null);
-
-                const updates = {
-                    board: newBoard,
-                    currentTurn: this.playerSymbol === 'X' ? 'O' : 'X'
-                };
-
-                if (winner) {
-                    updates.status = 'finished';
-                    updates.winner = winner.winner;
-                    updates.winningCombo = winner.combo;
-                } else if (isDraw) {
-                    updates.status = 'finished';
-                    updates.winner = 'draw';
+                if (!this.isMyTurn) {
+                    console.log('Not your turn');
+                    return;
                 }
 
-                await this.gameRef.update(updates);
+                if (!this.gameRef) {
+                    console.error('No game reference');
+                    return;
+                }
+
+                try {
+                    const snapshot = await this.gameRef.once('value');
+                    const gameData = snapshot.val();
+                    
+                    if (!gameData) {
+                        console.error('No game data');
+                        return;
+                    }
+
+                    if (!gameData.board || !Array.isArray(gameData.board)) {
+                        console.error('Invalid board data');
+                        return;
+                    }
+                    
+                    if (gameData.board[index] !== null) {
+                        console.log('Cell already taken');
+                        return;
+                    }
+
+                    const newBoard = [...gameData.board];
+                    newBoard[index] = this.playerSymbol;
+
+                    const winner = this.checkWinner(newBoard);
+                    const isDraw = newBoard.every(cell => cell !== null);
+
+                    const updates = {
+                        board: newBoard,
+                        currentTurn: this.playerSymbol === 'X' ? 'O' : 'X'
+                    };
+
+                    if (winner) {
+                        updates.status = 'finished';
+                        updates.winner = winner.winner;
+                        updates.winningCombo = winner.combo;
+                    } else if (isDraw) {
+                        updates.status = 'finished';
+                        updates.winner = 'draw';
+                    }
+
+                    await this.gameRef.update(updates);
+                    console.log('Move completed successfully');
+                } catch (error) {
+                    console.error('Error making move:', error);
+                }
             },
 
             handleMultiplayerGameEnd(gameData) {
