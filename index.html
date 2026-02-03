@@ -204,21 +204,21 @@
     <div class="container">
         <!-- Home Screen -->
         <div id="homeScreen" class="screen active">
-            <h1>נ® TIC TAC TOE</h1>
+            <h1>TIC TAC TOE</h1>
             <button class="btn btn-primary" onclick="game.createGame()">Create Game</button>
             <button class="btn btn-secondary" onclick="game.showJoinScreen()">Join Game</button>
         </div>
 
         <!-- Waiting Screen -->
         <div id="waitingScreen" class="screen">
-            <h1>Waiting for Friend...</h1>
-            <div class="loading">ג³</div>
+            <h1>Waiting for Friend</h1>
+            <div class="loading">Please wait</div>
             <div class="room-code-display">
                 <div style="color: #666; margin-bottom: 10px;">Room Code</div>
                 <div class="room-code" id="roomCode">------</div>
             </div>
-            <button class="btn btn-secondary" onclick="game.copyCode()">נ“‹ Copy Code</button>
-            <button class="btn btn-secondary" onclick="game.shareCode()">נ“₪ Share Code</button>
+            <button class="btn btn-secondary" onclick="game.copyCode()">Copy Code</button>
+            <button class="btn btn-secondary" onclick="game.shareCode()">Share Code</button>
             <button class="btn btn-secondary" onclick="game.cancelGame()">Cancel</button>
         </div>
 
@@ -236,7 +236,7 @@
 
         <!-- Game Screen -->
         <div id="gameScreen" class="screen">
-            <h1>נ® Playing</h1>
+            <h1>Playing</h1>
             <div class="player-info">
                 <div>You: <span id="yourSymbol" style="font-weight: bold;">X</span></div>
                 <div>Friend: <span id="friendSymbol" style="font-weight: bold;">O</span></div>
@@ -253,7 +253,7 @@
                 <button class="cell" onclick="game.makeMove(7)"></button>
                 <button class="cell" onclick="game.makeMove(8)"></button>
             </div>
-            <button class="btn btn-primary" id="playAgainBtn" style="display: none;" onclick="game.playAgain()">נ”„ Play Again</button>
+            <button class="btn btn-primary" id="playAgainBtn" style="display: none;" onclick="game.playAgain()">Play Again</button>
             <button class="btn btn-secondary" onclick="game.leaveGame()">Leave Game</button>
         </div>
     </div>
@@ -478,7 +478,7 @@
                         statusEl.textContent = "It's a Draw!";
                         statusEl.className = 'status';
                     } else if (gameData.winner === this.playerSymbol) {
-                        statusEl.textContent = 'נ‰ You Win! נ‰';
+                        statusEl.textContent = 'You Win!';
                         statusEl.className = 'status win';
                     } else {
                         statusEl.textContent = 'You Lost';
@@ -492,10 +492,10 @@
                     this.isMyTurn = (gameData.currentPlayer === this.playerSymbol);
                     
                     if (this.isMyTurn) {
-                        statusEl.textContent = 'נ¢ Your Turn - Tap a square';
+                        statusEl.textContent = 'Your Turn - Tap a square';
                         statusEl.className = 'status your-turn';
                     } else {
-                        statusEl.textContent = 'ג³ Waiting for opponent...';
+                        statusEl.textContent = 'Waiting for opponent...';
                         statusEl.className = 'status opponent-turn';
                     }
                 }
